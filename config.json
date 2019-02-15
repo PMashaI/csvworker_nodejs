@@ -1,0 +1,6 @@
+{
+    "input_file": "file.csv",
+    "output_csv_file": "outfile.csv",
+    "output_json_file": "outfileJson.json",
+    "output_format": ["console", "csv", "json"]
+}

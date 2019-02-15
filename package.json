@@ -1,0 +1,21 @@
+{
+  "name": "simplenodejs",
+  "version": "1.0.0",
+  "scripts": {
+    "start": "node src/index.js"
+  },
+  "dependencies": {
+    "@angular/http": "^5.2.0",
+    "@angular/router": "^5.2.0",
+    "express": "^4.15.2",
+    "csv-parser": "2.1.0",
+    "csv-write-stream": "2.0.0",
+    "lodash": "4.17.11"
+  },
+  "devDependencies": {
+    "@angular/cli": "1.6.5",
+    "@types/lodash": "4.14.120",
+    "@types/node": "~6.0.60",
+    "@angular/core": "^6.1.0"
+  }
+}
