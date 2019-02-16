@@ -2,6 +2,7 @@ const _ = require('lodash');
 const fs = require('fs'); 
 const csv = require('csv-parser');
 const csvWriter = require('csv-write-stream');
+let writer = csvWriter();
 
 function getConfigData() {
     const config_data = require('../config.json');
@@ -10,11 +11,11 @@ function getConfigData() {
 }
 
 function getConfigDataFromArgs() {
-    return { ... };
+    //return { ... };
 }
 
 function getConfigDataFromArgsUsingCommandLineParser() {
-    return { ... };
+   // return { ... };
 }
 
 main(getConfigData());
@@ -25,6 +26,47 @@ function main(config_data) {
     const outputFormats = config_data.output_format;
     const outputFileJsonPath = config_data.output_json_file;
 
+    const consoleOutputProvider = {
+        onStart() {
+        },
+        onData(data) {
+            console.log("Console data output: ");
+            console.log(JSON.stringify(data, null, 4));
+        },
+        onEnd() {
+        }
+    }
+
+    const jsonOutputProvider = {
+        onStart(){
+
+        },
+        onData(data){
+            var jsonFormatedData = JSON.stringify(data);
+            fs.writeFile(outputFileJsonPath, jsonFormatedData, 'utf8', function(err) {
+                if (err){
+                    throw err;
+                }
+            });
+        },
+        onEnd(){
+
+        }
+    }
+
+    const csvOutputProvider = {
+        onStart(){
+
+        },
+        onData(data){
+            writer.pipe(fs.createWriteStream(outputFilePath, {flags: 'a'}))
+            writer.write(data);
+        },
+        onEnd(){
+
+        }
+    }
+    
     const knownFormatProviders = {
         console: consoleOutputProvider,
         json: jsonOutputProvider,
@@ -53,35 +95,8 @@ function main(config_data) {
     });  
 
     function outputData(data, formats){
-        _.forEach(formats, format => knownFormatProviders[format](data));
-    }
-
-    const consoleOutputProvider = {
-        onStart() {
-        },
-        onData(data) {
-            console.log("Console data output: ");
-            console.log(JSON.stringify(data, null, 4));
-        },
-        onEnd() {
-        }
-    }
-
-    function jsonOutputProvider(data){
-        //TODO: write all data in the file, not separate 
-        var jsonFormatedData = JSON.stringify(data);
-        fs.writeFile(outputFileJsonPath, jsonFormatedData, 'utf8', function(err) {
-            if (err){
-                throw err;
-            }
-        });
-    }
-
-    function csvOutputProvider(data){
-    let writer = csvWriter();
-        writer.pipe(fs.createWriteStream(outputFilePath, {flags: 'a'}))
-        writer.write(data);
-    }
+        _.forEach(formats, format => knownFormatProviders[format].onData(data));
+    }    
 }
 //TODO: CLI
 //---DONE: 0. Обработка аргументов средами ноды просто руками (read with Node only) - операционка стартует процесс и подает ей параметры
