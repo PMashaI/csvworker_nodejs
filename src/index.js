@@ -28,18 +28,20 @@ function main(config_data) {
 
     const consoleOutputProvider = {
         onStart() {
+            console.log("Start console output provider");
         },
         onData(data) {
             console.log("Console data output: ");
             console.log(JSON.stringify(data, null, 4));
         },
         onEnd() {
+            console.log("Finish console output provider");
         }
     }
 
     const jsonOutputProvider = {
         onStart(){
-
+            console.log("Start json output provider");
         },
         onData(data){
             var jsonFormatedData = JSON.stringify(data);
@@ -50,20 +52,21 @@ function main(config_data) {
             });
         },
         onEnd(){
-
+            console.log("Finish json output provider");
         }
     }
 
     const csvOutputProvider = {
         onStart(){
-
+            console.log("Start csv output provider");
         },
         onData(data){
             writer.pipe(fs.createWriteStream(outputFilePath, {flags: 'a'}))
             writer.write(data);
         },
         onEnd(){
-
+            //writer.end
+            console.log("Finish csv output provider");
         }
     }
     
@@ -79,25 +82,31 @@ function main(config_data) {
     console.log("outputFileJson " + outputFileJsonPath);
 
     fs.createReadStream(inputFilePath)
-    .pipe(csv()) //TODO: call forEach для onStart для каждого провайдера
+    .on('start', function(){
+        _.forEach(formats, format => knownFormatProviders[format].onStart());
+    })
+    .pipe(csv())
     .on('data', function(data){
         try {
-            outputData(data, outputFormats);
+            outputData(data);
         }
         catch(err) {
             console.log(err);
         }
     })
     .on('end',function(){
-        //TODO: call forEach для onEnd для каждого провайдера
-        writer.end();
-        console.log("finish");
+        endFunctionality();
     });  
 
-    function outputData(data, formats){
-        _.forEach(formats, format => knownFormatProviders[format].onData(data));
+    function endFunctionality(){
+        _.forEach(outputFormats, format => knownFormatProviders[format].onEnd());
+    }
+
+    function outputData(data){
+        _.forEach(outputFormats, format => knownFormatProviders[format].onData(data));
     }    
 }
+
 //TODO: CLI
 //---DONE: 0. Обработка аргументов средами ноды просто руками (read with Node only) - операционка стартует процесс и подает ей параметры
 //1. Сделать параметры для названий файлов, которые конфигурировались бы при старте 
