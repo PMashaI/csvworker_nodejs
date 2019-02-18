@@ -9,6 +9,8 @@ flipit.enable('testFeature')
 //here the promise comes
 flipit.load('flipitConfigurationFile.json');
 
+const flagger = require('flagger');
+
 function getConfigData() {
     console.log("using node conf");
     const config_data = require('../config.json');
@@ -31,6 +33,12 @@ function main(config_data) {
     const outputFilePath = config_data.output_csv_file;
     const outputFormats = config_data.output_format;
     const outputFileJsonPath = config_data.output_json_file;
+
+    /* flagger is not working :( )
+    flagger.configure({feature: true}).then(function() {
+        const entity = {id: 1};
+        console.log('feature is', flag.isEnabled(entity) ? 'enabled' : 'disabled');
+    });*/
 
     const consoleOutputProvider = {
         onStart() {
@@ -96,7 +104,7 @@ function main(config_data) {
     .pipe(csv())
     .on('data', function(data){
         try {
-            outputData(data);
+            outputData(data);              
         }
         catch(err) {
             console.log(err);
