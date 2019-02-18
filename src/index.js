@@ -11,6 +11,14 @@ flipit.load('flipitConfigurationFile.json');
 
 const flagger = require('flagger');
 
+const fflip = require('fflip');
+const fflipEntities = getFeaturesAndCriterias(); 
+
+fflip.config({
+  criteria: fflipEntities.criterias,
+  features: fflipEntities.features
+});
+
 function getConfigData() {
     console.log("using node conf");
     const config_data = require('../config.json');
@@ -27,6 +35,41 @@ function getConfigDataFromArgsUsingCommandLineParser() {
 }
 
 main(getConfigData());
+
+function getFeaturesAndCriterias() { 
+    return { 
+        features: [
+            {
+            id: 'consoleOutputProviderOnEnd',
+            name: 'consoleOutputProvider call onEnd functionality', 
+            description: 'should use onEnd functionality for consoleOutputProvider',
+            enabled: false,
+            criteria: {consoleFormat: 'console'}
+            },
+            {
+            id: 'jsonOutputProviderOnEnd',
+            name: 'jsonOutputProvider call onEnd functionality', 
+            description: 'should use onEnd functionality for jsonOutputProvider',
+            enabled: false,
+            criteria: {jsonFormat: 'json'}
+            },
+        ],
+    criterias: [
+        {
+          id: 'jsonFormat',
+          check: function(format) {
+            return format == 'json';
+          }
+        },
+        {
+          id: 'consoleFormat',
+          check: function(format) {
+            return format == 'console';
+          }
+        }
+      ]
+    }
+}
 
 function main(config_data) {
     const inputFilePath = config_data.input_file;
@@ -99,7 +142,7 @@ function main(config_data) {
 
     fs.createReadStream(inputFilePath)
     .on('start', function(){
-        _.forEach(formats, format => knownFormatProviders[format].onStart());
+        onStartFunctionality();
     })
     .pipe(csv())
     .on('data', function(data){
@@ -115,12 +158,21 @@ function main(config_data) {
     });  
 
     function endFunctionality(){
-        _.forEach(outputFormats, format => knownFormatProviders[format].onEnd());
+        _.forEach(outputFormats, function (format) {
+            if(fflip.getFeaturesForUser(format)){
+                console.log("I am here");
+            }
+            knownFormatProviders[format].onEnd();
+        });
     }
 
     function outputData(data){
         _.forEach(outputFormats, format => knownFormatProviders[format].onData(data));
     }    
+
+    function onStartFunctionality(){
+        _.forEach(formats, format => knownFormatProviders[format].onStart());
+    }
 }
 
 //TODO: CLI
