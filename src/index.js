@@ -3,19 +3,25 @@ const fs = require('fs');
 const csv = require('csv-parser');
 const csvWriter = require('csv-write-stream');
 let writer = csvWriter();
+const flipit = require('flipit');
+
+flipit.enable('testFeature')
+//here the promise comes
+flipit.load('flipitConfigurationFile.json');
 
 function getConfigData() {
+    console.log("using node conf");
     const config_data = require('../config.json');
 
     return config_data;
 }
 
 function getConfigDataFromArgs() {
-    //return { ... };
+    
 }
 
 function getConfigDataFromArgsUsingCommandLineParser() {
-   // return { ... };
+    
 }
 
 main(getConfigData());
@@ -36,6 +42,8 @@ function main(config_data) {
         },
         onEnd() {
             console.log("Finish console output provider");
+            console.log('flipit testFeature');
+            console.log(flipit.isEnabled('testFeature'));
         }
     }
 
