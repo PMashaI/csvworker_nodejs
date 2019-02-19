@@ -53,6 +53,13 @@ function getFeaturesAndCriterias() {
             enabled: false,
             criteria: {jsonFormat: 'json'}
             },
+            {
+            id: 'csvOutputProviderOnEnd',
+            name: 'csvOutputProvider call onEnd functionality', 
+            description: 'should use onEnd functionality for csvOutputProvider',
+            enabled: true,
+            criteria: {csvFormat: 'csv'}
+            }
         ],
     criterias: [
         {
@@ -65,6 +72,12 @@ function getFeaturesAndCriterias() {
           id: 'consoleFormat',
           check: function(format) {
             return format == 'console';
+          }
+        },
+        {
+          id: 'csvFormat',
+          check: function(format) {
+            return format == 'csv';
           }
         }
       ]
@@ -93,6 +106,7 @@ function main(config_data) {
         },
         onEnd() {
             console.log("Finish console output provider");
+
             console.log('flipit testFeature');
             console.log(flipit.isEnabled('testFeature'));
         }
@@ -159,10 +173,12 @@ function main(config_data) {
 
     function endFunctionality(){
         _.forEach(outputFormats, function (format) {
-            if(fflip.getFeaturesForUser(format)){
-                console.log("I am here");
+            let isFormatEnabled = fflip.isFeatureEnabledForUser(format+"OutputProviderOnEnd");
+          
+            if(isFormatEnabled){
+                //call onEnd if only feature is switched on
+                knownFormatProviders[format].onEnd();
             }
-            knownFormatProviders[format].onEnd();
         });
     }
 
