@@ -3,6 +3,47 @@ const fs = require('fs');
 const csv = require('csv-parser');
 const csvWriter = require('csv-write-stream');
 let writer = csvWriter();
+
+const commandLineUsage = require('command-line-usage');
+const usage = [
+    {
+      header: 'parsers_app',
+      content: 'This app will allow you to read from csv file and put this info into three different formats.'
+    },
+    {
+      header: 'Options',
+      optionList: [
+        {
+          name: 'help',
+          description: 'Display this usage guide.',
+          alias: 'h',
+          type: Boolean
+        },
+        {
+          name: 'src',
+          description: 'The input files to process. This is some additional text existing solely to demonstrate word-wrapping, nothing more, nothing less. And nothing in between.',
+          type: String,
+          multiple: true,
+          defaultOption: true,
+          typeLabel: '{underline file} ...'
+        },
+        {
+          name: 'timeout',
+          description: 'Timeout value in ms.',
+          alias: 't',
+          type: Number,
+          typeLabel: '{underline ms}'
+        }
+      ]
+    },
+    {
+      content: 'Project home: {underline https://github.com/PMashaI/csvworker_nodejs}'
+    }
+  ];
+
+ const conf =  commandLineUsage(usage);
+console.log(conf);
+
 const flipit = require('flipit');
 
 flipit.enable('testFeature')
@@ -27,10 +68,6 @@ function getConfigData() {
 }
 
 function getConfigDataFromArgs() {
-    
-}
-
-function getConfigDataFromArgsUsingCommandLineParser() {
     
 }
 
@@ -193,7 +230,7 @@ function main(config_data) {
 
 //TODO: CLI
 //---DONE: 0. Обработка аргументов средами ноды просто руками (read with Node only) - операционка стартует процесс и подает ей параметры
-//1. Сделать параметры для названий файлов, которые конфигурировались бы при старте 
+//---DONE:1. Сделать параметры для названий файлов, которые конфигурировались бы при старте 
 // приложения - how to read using external libraries, compare them. Параметры: флаги (например, verbose)
 // , единичные значения - конкретно, что будет использоваться; списки - например, в каком формате выдаем файлы
 //---DONE: 2. Сделать тип выхода \ печати данных (консоль, csv, json)
