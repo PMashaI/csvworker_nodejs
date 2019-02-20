@@ -7,9 +7,13 @@
   "dependencies": {
     "@angular/http": "^5.2.0",
     "@angular/router": "^5.2.0",
-    "express": "^4.15.2",
+    "command-line-usage": "^5.0.5",
     "csv-parser": "2.1.0",
     "csv-write-stream": "2.0.0",
+    "express": "^4.15.2",
+    "fflip": "^4.0.0",
+    "flagger": "^2.0.4",
+    "flipit": "^2.0.3",
     "lodash": "4.17.11"
   },
   "devDependencies": {
