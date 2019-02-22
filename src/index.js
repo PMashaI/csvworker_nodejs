@@ -41,7 +41,7 @@ const usage = [
     }
   ];
 
- const conf =  commandLineUsage(usage);
+const conf =  commandLineUsage(usage);
 console.log(conf);
 
 const flipit = require('flipit');
@@ -240,3 +240,5 @@ function main(config_data) {
 //pipe, on(End/data/...) - Stream concept in nodeJS. Why? (what problem solved). How to use? How it works?
 
 // Micro task vs Macro task (vs Event task)
+
+//https://github.com/nodeca/argparse
