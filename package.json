@@ -8,6 +8,7 @@
     "@angular/http": "^5.2.0",
     "@angular/router": "^5.2.0",
     "command-line-usage": "^5.0.5",
+    "commander": "^2.19.0",
     "csv-parser": "2.1.0",
     "csv-write-stream": "2.0.0",
     "express": "^4.15.2",
